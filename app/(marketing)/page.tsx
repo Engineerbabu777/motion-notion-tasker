@@ -1,7 +1,16 @@
 import Image from 'next/image'
+import Heading from './_components/Header'
+import { Heroes } from './_components/Heroes'
+import { Footer } from './_components/Footer'
 
-export default function Home() {
+export default function MarketingPage () {
   return (
-    <p className="text-red-500 text-[50px]">Hello Notion Clone!</p>
+    <div className='min-h-full flex flex-col dark:bg-[#1F1F1F]'>
+      <div className='flex flex-col items-center justify-center md:justify-start text-center gap-y-8 flex-1 px-6 pb-10'>
+        <Heading />
+        <Heroes />
+      </div>
+      <Footer />
+    </div>
   )
 }

@@ -1,34 +1,50 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import { ThemeProvider } from '@/components/providers/theme-provider'
+import { ConvexClientProvider } from '@/components/providers/convex-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Motion-Clone',
   description: 'The note taking application.',
-  icons:{
-    icon:[{
-      media:"(prefer-color-scheme: light)",
-      url:"/logo.svg",
-      href:"/logo.svg"
-    },{
-      media:"(prefer-color-scheme:dark)",
-      url:"/logo-dark.svg",
-      href:"/logo-dark.svg",
-    }
+  icons: {
+    icon: [
+      {
+        media: '(prefers-color-scheme: light)',
+        url: '/logo.svg',
+        href: '/logo.svg'
+      },
+      {
+        media: '(prefers-color-scheme:dark)',
+        url: '/logo-dark.svg',
+        href: '/logo-dark.svg'
+      }
     ]
   }
 }
 
-export default function RootLayout({
-  children,
+export default function RootLayout ({
+  children
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang='en'>
+      <body className={inter.className} suppressHydrationWarning>
+        <ConvexClientProvider>
+          <ThemeProvider
+            attribute='class'
+            defaultTheme='system'
+            enableSystem
+            disableTransitionOnChange
+            storageKey='motion-theme-2'
+          >
+            {children}
+          </ThemeProvider>
+        </ConvexClientProvider>
+      </body>
     </html>
   )
 }
