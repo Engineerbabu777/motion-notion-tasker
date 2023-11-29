@@ -1,12 +1,23 @@
 import { cn } from '@/lib/utils'
-import { ChevronsLeft, MenuIcon } from 'lucide-react'
+import { ChevronsLeft, MenuIcon,  PlusCircle,
+  Search,
+  Settings,
+  Trash } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { ElementRef, useState, useRef, useEffect } from 'react'
 import { useMediaQuery } from 'usehooks-ts'
+import { UserItem } from './UserItem'
+import {useMutation, useQuery} from 'convex/react'
+import { api } from '@/convex/_generated/api'
+import { Item } from './Item'
+import {toast} from 'sonner';
 
 export default function Navigation ({}) {
   const isMobile = useMediaQuery('(max-width: 768px)')
   const pathname = usePathname()
+
+  const documents = useQuery(api.documents.get)
+  const create = useMutation(api.documents.create)
 
   const isResizingRef = useRef(false)
   const sidebarRef = useRef < ElementRef < 'aside' >> (null)
@@ -94,6 +105,15 @@ export default function Navigation ({}) {
     }
   }
 
+  const handleCreate = async() => {
+    const promise = create({title:'Untitled'});
+
+    toast.promise(promise, {
+      loading: "Creating a new note...",
+      success: "New note created!",
+      error: "Failed to create a new note."
+    });
+  }
   return (
     <>
       <aside
@@ -115,10 +135,28 @@ export default function Navigation ({}) {
           <ChevronsLeft className='h-6 w-6' />
         </div>
         <div className=''>
-          <p className=''>Action items</p>
+          <UserItem />
+          {/* <Item
+            label="Search"
+            icon={Search}
+            isSearch
+            onClick={search.onOpen}
+          /> */}
+          {/* <Item
+            label="Settings"
+            icon={Settings}
+            onClick={settings.onOpen}
+          /> */}
+          <Item
+            onClick={handleCreate}
+            label="New page"
+            icon={PlusCircle}
+          />
         </div>
         <div className='mt-4'>
-          <p className=''>Documents</p>
+          {documents?.map((d,i) => {
+            return(<p key={i}>{d?.title}</p>)
+          })}
         </div>
         <div
           onMouseDown={handleMouseDown}
