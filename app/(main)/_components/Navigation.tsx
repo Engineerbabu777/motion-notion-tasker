@@ -1,16 +1,26 @@
 import { cn } from '@/lib/utils'
-import { ChevronsLeft, MenuIcon,  PlusCircle,
+import {
+  ChevronsLeft,
+  MenuIcon,
+  PlusCircle,
   Search,
   Settings,
-  Trash } from 'lucide-react'
+  Trash
+} from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { ElementRef, useState, useRef, useEffect } from 'react'
 import { useMediaQuery } from 'usehooks-ts'
 import { UserItem } from './UserItem'
-import {useMutation,} from 'convex/react'
+import { useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { Item } from './Item'
-import {toast} from 'sonner';
+import { toast } from 'sonner'
+import { DocumentList } from './DocumentList'
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 
 export default function Navigation ({}) {
   const isMobile = useMediaQuery('(max-width: 768px)')
@@ -26,25 +36,24 @@ export default function Navigation ({}) {
 
   useEffect(() => {
     if (isMobile) {
-      collapse();
+      collapse()
     } else {
-      resetWidth();
+      resetWidth()
     }
-  }, [isMobile]);
+  }, [isMobile])
 
   useEffect(() => {
     if (isMobile) {
-      collapse();
+      collapse()
     }
-  }, [pathname, isMobile]);
-
+  }, [pathname, isMobile])
 
   // HANDLING MOUSE DOWN EVENT!
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault()
     e.stopPropagation()
 
-    isResizingRef.current = true;
+    isResizingRef.current = true
     document.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseup', handleMouseUp)
   }
@@ -72,46 +81,43 @@ export default function Navigation ({}) {
   }
 
   const resetWidth = () => {
-    if(sidebarRef.current && navbarRef.current){
-      setIsCollapsed(false);
-      setIsResetting(true);
+    if (sidebarRef.current && navbarRef.current) {
+      setIsCollapsed(false)
+      setIsResetting(true)
 
-      sidebarRef.current.style.width = isMobile ? "100%" : "240px";
+      sidebarRef.current.style.width = isMobile ? '100%' : '240px'
       navbarRef.current.style.setProperty(
-        "width",
-        isMobile ? "0" : "calc(100% - 240px)"
-      );
-      navbarRef.current.style.setProperty(
-        "left",
-        isMobile ? "100%" : "240px"
-      );
+        'width',
+        isMobile ? '0' : 'calc(100% - 240px)'
+      )
+      navbarRef.current.style.setProperty('left', isMobile ? '100%' : '240px')
 
       setTimeout(() => {
-        setIsResetting(false);
-      },300)
+        setIsResetting(false)
+      }, 300)
     }
   }
 
   const collapse = () => {
     if (sidebarRef.current && navbarRef.current) {
-      setIsCollapsed(true);
-      setIsResetting(true);
+      setIsCollapsed(true)
+      setIsResetting(true)
 
-      sidebarRef.current.style.width = "0";
-      navbarRef.current.style.setProperty("width", "100%");
-      navbarRef.current.style.setProperty("left", "0");
-      setTimeout(() => setIsResetting(false), 300);
+      sidebarRef.current.style.width = '0'
+      navbarRef.current.style.setProperty('width', '100%')
+      navbarRef.current.style.setProperty('left', '0')
+      setTimeout(() => setIsResetting(false), 300)
     }
   }
 
-  const handleCreate = async() => {
-    const promise = create({title:'Untitled'});
+  const handleCreate = async () => {
+    const promise = create({ title: 'Untitled' })
 
     toast.promise(promise, {
-      loading: "Creating a new note...",
-      success: "New note created!",
-      error: "Failed to create a new note."
-    });
+      loading: 'Creating a new note...',
+      success: 'New note created!',
+      error: 'Failed to create a new note.'
+    })
   }
   return (
     <>
@@ -136,28 +142,38 @@ export default function Navigation ({}) {
         <div className=''>
           <UserItem />
           <Item
-            label="Search"
+            label='Search'
             icon={Search}
             isSearch
             // onClick={search.onOpen}
           />
           <Item
-            label="Settings"
+            label='Settings'
             icon={Settings}
             // onClick={settings.onOpen}
           />
-          <Item
-            onClick={handleCreate}
-            label="New page"
-            icon={PlusCircle}
-          />
+          <Item onClick={handleCreate} label='New page' icon={PlusCircle} />
         </div>
         <div className='mt-4'>
-        
+          <DocumentList />
+          <Item onClick={handleCreate} label='New page' icon={PlusCircle} />
+          <Popover>
+            <PopoverTrigger className="w-full mt-4">
+              <Item label="Trash" icon={Trash} />
+            </PopoverTrigger>
+            <PopoverContent
+              className="p-0 w-72"
+              side={isMobile ? "bottom" : "right"}
+            >
+            </PopoverContent>
+          </Popover>
+
         </div>
         <div
           onMouseDown={handleMouseDown}
-          onClick={() => {resetWidth()}}
+          onClick={() => {
+            resetWidth()
+          }}
           className='opacity-0 group-hover/sidebar:opacity-100 transition cursor-ew-resize absolute h-full w-1 bg-primary/10 right-0 top-0'
         />
       </aside>
@@ -172,7 +188,11 @@ export default function Navigation ({}) {
       >
         <nav className='bg-transparent px-3 py-2 w-full'>
           {isCollapsed && (
-            <MenuIcon role='button' className='h-6 w-6 text-muted-foreground' onClick={resetWidth} />
+            <MenuIcon
+              role='button'
+              className='h-6 w-6 text-muted-foreground'
+              onClick={resetWidth}
+            />
           )}
         </nav>
       </div>
