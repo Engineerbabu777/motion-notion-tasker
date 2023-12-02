@@ -24,6 +24,7 @@ import {
 import { TrashBox } from './TrashBox'
 import { useSearch } from '@/hooks/use-search'
 import { useSettings } from '@/hooks/use-settings'
+import { Navbar } from './Navbar'
 
 export default function Navigation ({}) {
   const isMobile = useMediaQuery('(max-width: 768px)')
@@ -192,11 +193,11 @@ export default function Navigation ({}) {
           isMobile && 'left-0 w-full'
         )}
       >
-        {!!params.documentId ? (<></>
-          // <Navbar
-          //   isCollapsed={isCollapsed}
-          //   onResetWidth={resetWidth}
-          // />
+        {!!params.documentId ? (
+          <Navbar
+            isCollapsed={isCollapsed}
+            onResetWidth={resetWidth}
+          />
         ) : (
           <nav className="bg-transparent px-3 py-2 w-full">
             {isCollapsed && <MenuIcon onClick={resetWidth} role="button" className="h-6 w-6 text-muted-foreground" />}
